@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detector de Phishing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border-radius: 5px;
+        }
+        .result.safe {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .flash {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        function addUrlFields() {
+            const numUrls = document.getElementById("numUrls").value;
+            const urlFieldsContainer = document.getElementById("urlFields");
+
+            // Limpiar campos existentes
+            urlFieldsContainer.innerHTML = "";
+
+            // Crear campos según la selección del usuario
+            for (let i = 1; i <= numUrls; i++) {
+                const input = document.createElement("input");
+                input.type = "text";
+                input.name = `url${i}`;
+                input.placeholder = `Introduce la URL ${i}`;
+                input.required = true;
+                urlFieldsContainer.appendChild(input);
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Detector de Phishing</h1>
+        
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="flash">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+        
+        <form action="/check" method="post">
+            <label for="numUrls">¿Cuántas páginas quieres escanear?</label>
+            <select id="numUrls" name="numUrls" onchange="addUrlFields()">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <div id="urlFields">
+                <input type="text" name="url1" placeholder="Introduce la URL 1" required>
+            </div>
+            <button type="submit">Analizar Páginas</button>
+        </form>
+
+        {% if message %}
+        <div class="result {% if 'segura' in message %}safe{% endif %}">
+            {{ message }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
